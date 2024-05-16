@@ -1,0 +1,43 @@
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+    gateway:
+      routes:
+        - id: myoj-backend-user-service
+          uri: lb://myoj-backend-user-service
+          predicates:
+            - Path=/api/user/**
+
+        - id: myoj-backend-question-service
+          uri: lb://myoj-backend-question-service
+          predicates:
+            - Path=/api/question/**
+
+        - id: myoj-backend-judge-service
+          uri: lb://myoj-backend-judge-service
+          predicates:
+            - Path=/api/judge/**
+  application:
+    name: myoj-backend-gateway
+
+    #springcloudgateway响应式开发与传统的springmvc的同步式响应冲突，现在设置为响应式
+  main:
+    web-application-type: reactive
+
+server:
+  port: 8101
+knife4j:
+  gateway:
+    #开启gateway聚合组件
+    enabled: true
+    #模式为discover模式，自动聚合(上面我们已经配置了网关的路由，这里类似于去找上面路由对应的接口地址)
+    strategy: discover
+    discover:
+      enabled: true
+      #全部为swagger2规范的文档
+      version: swagger2
+
+
